@@ -203,7 +203,6 @@ class LightOpenID
                         $url = $this->build_url(parse_url($url), parse_url(trim($m[1])));
                         $next = true;
                     }
-
                     if (preg_match('#Content-Type\s*:\s*application/xrds\+xml#i', $header)) {
                         # Found an XRDS document, now let's find the server, and optionally delegate.
                         $content = $this->request($url, 'GET');

@@ -30,6 +30,9 @@ $english = array(
   'izap-open-login:' => '',
   'izap-open-login:' => '',
   'izap-open-login:' => '',
+
+    'izap-open-login:fb_appid' => 'Facebook app-id',
+    'izap-open-login:fb_app_secid' => 'Facebook app secret id',
 );
 
 add_translation('en', $english);
