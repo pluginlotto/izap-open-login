@@ -30,3 +30,9 @@ function func_izap_get_openid_url($openid_name) {
 
   return $opeid_array[$openid_name];
 }
+
+function createname($identity,$id){
+
+  return $username = substr(md5($identity.'_'.$id),0,10);
+
+  }

@@ -16,6 +16,7 @@
 class IzapOpenloginController extends IzapController {
 
   public function __construct($page) {
+    IzapBase::loadLib(array('lib' => 'izap-openid-login','plugin' => GLOBAL_IZAP_OPENLOGIN_PLUGIN));
     parent::__construct($page);
   }
 
@@ -35,7 +36,7 @@ class IzapOpenloginController extends IzapController {
         $izapOpenLogin->identity = $openid_url;
         $izapOpenLogin->required = array('contact/email');
         forward($izapOpenLogin->authUrl());
-              }
+      }
     } elseif ($openid_mode == 'cancel') {
       register_error(elgg_echo('izap-open-login:auth_cancled'));
     } else {
@@ -87,7 +88,8 @@ class IzapOpenloginController extends IzapController {
       }
     } else { // if no user then register and login
       $email_array = explode('@', $user_email);
-      $user_name = $email_array[0] . '_' . rand(time(), (time() + 1000));
+      $user_name = createname($user_identity,$user_email);
+      ////$email_array[0] . '_' . rand(time(), (time() + 1000));
       $name = $email_array[0];
       $user_pass = substr(md5($user_name . rand(1000, 10000)), 1, 8);
       try {
@@ -140,6 +142,17 @@ class IzapOpenloginController extends IzapController {
       forward();
   }
 
+  public function logoutFB() {
+    $facebook = new Facebook(array(
+                'appId' => GLOBAL_IZAP_OPENLOGIN_FB_APPID,
+                'secret' => GLOBAL_IZAP_OPENLOGIN_FB_SECID,
+                'cookie' => true,
+            ));
+    $logout_url = $facebook->getLogoutUrl(array('next' => elgg_get_site_url() . GLOBAL_IZAP_OPENLOGIN_PAGEHANDLER . '/fblogout'));
+    header("Location: {$logout_url}");
+    exit;
+  }
+
   public function actionFblogout() {
     $facebook = new Facebook(array(
                 'appId' => GLOBAL_IZAP_OPENLOGIN_FB_APPID,
@@ -153,17 +166,18 @@ class IzapOpenloginController extends IzapController {
     exit;
   }
 
+
+
   /**
    * logins or register & login the facebook user
    * @param array $fb_user facebook user array
    */
   public function actionUser($fb_user) {
     // start login and register
-    //c($fb_user);exit;
-    $user_name = $fb_user['id'];
+
+    $user_name = createname('facebook',$fb_user['email']);
     $user_email = ($fb_user['email']);
     $user_identity = 'facebook';
-
     $user = get_user_by_username($user_name);
     // if user exists then try to login
     if ($user instanceof ElggUser) {
@@ -177,19 +191,19 @@ class IzapOpenloginController extends IzapController {
         register_error(elgg_echo('login:baduser'));
       }
     } else { // if no user then register and login
-      $user->{$user_identity . '_id'} = $fb_user['id'];
-      $user->{$user_identity . '_username'} = $fb_user['username'];
       $name = $fb_user['name'];
       $user_pass = substr(md5($user_name . rand(1000, 10000)), 1, 8);
       try {
         $guid = register_user($user_name, $user_pass, $name, $user_email);
       } catch (Exception $e) {
-        register_error(elgg_echo("registerbad") . '<br />' . $e->getMessage());
-        forward();
-        exit;
+        register_error($e->getMessage());
+        $this->logoutFB(); // logout FB
       }
+
       $new_user = get_user($guid);
       $new_user->briefdescription = $fb_user['bio'];
+      $user->{$user_identity . '_id'} = $fb_user['id'];
+      $user->{$user_identity . '_username'} = $fb_user['username'];
 
       // for the new user, get the profile picture
       if ($new_user) {
@@ -228,6 +242,7 @@ class IzapOpenloginController extends IzapController {
             forward();
           } else {
             register_error(elgg_echo('login:baduser'));
+            $this->logoutFB(); // logout FB
           }
         }
       }
