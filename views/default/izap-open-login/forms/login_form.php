@@ -52,7 +52,7 @@ if ($fb_session) {
 ?>
     <a href="<?php echo $link ?>" title="<?php echo sprintf(elgg_echo('izap-open-login:login_with'), $name); ?>">
       <img src="<?php echo $graphics_path . $name ?>_logo.png" alt="<?php echo sprintf(elgg_echo('izap-open-login:login_with'), $name); ?>" />
-    </a>
+    </a><br/>
 <?php
     endforeach;
 ?>
