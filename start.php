@@ -25,6 +25,7 @@ function init_izap_open_login() {
 
   izap_plugin_init( GLOBAL_IZAP_OPENLOGIN_PLUGIN);
   elgg_register_page_handler(GLOBAL_IZAP_OPENLOGIN_PAGEHANDLER, GLOBAL_IZAP_PAGEHANDLER);
+  if($_SESSION['LOGIN_VIA_FACEBOOK'])
   elgg_register_event_handler('logout', 'user', 'izap_facebook_logout');
 
   $CONFIG->IZAP_openid_providers = array(
