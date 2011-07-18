@@ -16,7 +16,7 @@
 class IzapOpenloginController extends IzapController {
 
   public function __construct($page) {
-    IzapBase::loadLib(array('lib' => 'izap-openid-login','plugin' => GLOBAL_IZAP_OPENLOGIN_PLUGIN));
+    IzapBase::loadLib(array('lib' => 'izap-openid-login', 'plugin' => GLOBAL_IZAP_OPENLOGIN_PLUGIN));
     parent::__construct($page);
   }
 
@@ -76,11 +76,13 @@ class IzapOpenloginController extends IzapController {
     $user_identity = get_input('open_id_identity');
     $id_provider = get_input('id_provider');
     $user_email = get_input('user_email', 'unknown@please_change_this.com');
-    $user = get_user_by_email($user_email);
+
+
+    $user = $this->validate_user_with_id($user_email, $id_provider);
 
 // if user exists then try to login
-    if ($user[0] instanceof ElggUser) {
-      if (login($user[0])) {
+    if ($user instanceof ElggUser) {
+      if (login($user)) {
         $user->identity = $user_identity;
         system_message(elgg_echo('izap-open-login:user_loggedin'));
       } else {
@@ -88,7 +90,7 @@ class IzapOpenloginController extends IzapController {
       }
     } else { // if no user then register and login
       $email_array = explode('@', $user_email);
-      $user_name = createname($user_identity,$user_email);
+      $user_name =$email_array[0] . '_' . rand(time(), (time() + 1000));
       ////$email_array[0] . '_' . rand(time(), (time() + 1000));
       $name = $email_array[0];
       $user_pass = substr(md5($user_name . rand(1000, 10000)), 1, 8);
@@ -121,6 +123,37 @@ class IzapOpenloginController extends IzapController {
     forward();
   }
 
+  private function validate_user_with_id($email, $id) {
+//    echo $email.'_'.$id;exit;
+
+    $user_array = get_user_by_email($email);
+    $user = $user_array[0];
+    $user_login_id =  parse_url(substr($user->validated_method, 7));
+    
+    if (strstr($user_login_id['host'],$id) || $user=='')
+      return $user;
+    else {
+        register_error(elgg_echo('izap-open-login:already registered_through_facebook'));
+        forward();
+          }
+  }
+
+  private function validate_fbuser_with_id($email){
+    $user_array = get_user_by_email($email);
+    $user = $user_array[0];
+    $user_login_id =  substr($user->validated_method, 7);
+
+    if($user_login_id=='facebook' || $user=='')
+      return $user;
+else {
+  $login_id =  parse_url($user_login_id);
+  $login = explode('.',$login_id['host']);
+        register_error(sprintf(elgg_echo('izap-open-login:already registered'),$login[1]));
+        $this->logoutFB();
+
+}
+  }
+
   public function actionFb() {
     global $CONFIG;
     $facebook = new Facebook(array(
@@ -128,6 +161,7 @@ class IzapOpenloginController extends IzapController {
                 'secret' => GLOBAL_IZAP_OPENLOGIN_FB_SECID,
                 'cookie' => true,
             ));
+
     $fb_session = $facebook->getSession();
     if ($fb_session) {
       try {
@@ -135,7 +169,7 @@ class IzapOpenloginController extends IzapController {
         $this->actionUser($me);
       } catch (FacebookApiException $e) {
         register_error($e->getMessage());
-        $this->actionFblogout();
+        $this->logoutFB();
       }
     }
     else
@@ -154,6 +188,7 @@ class IzapOpenloginController extends IzapController {
   }
 
   public function actionFblogout() {
+    $ret = setcookie('fbs_' . GLOBAL_IZAP_OPENLOGIN_FB_APPID, null, time() - (86400 * 30));
     $facebook = new Facebook(array(
                 'appId' => GLOBAL_IZAP_OPENLOGIN_FB_APPID,
                 'secret' => GLOBAL_IZAP_OPENLOGIN_FB_SECID,
@@ -161,13 +196,19 @@ class IzapOpenloginController extends IzapController {
             ));
     $old_session = $facebook->getSession();
     $old_session['expires'] = time() - (86400 * 30);
-    $facebook->setSession($old_session);
+    
+    $facebook->setSession($old_session,true);
     forward();
     exit;
   }
 
-
-
+  private function fbscript(){
+    echo '<script type="text/javascript">';
+    echo 'window.parent.location.reload(true);';
+    echo "\n";
+    echo 'self.close();';
+    echo '</script>';
+  }
   /**
    * logins or register & login the facebook user
    * @param array $fb_user facebook user array
@@ -175,17 +216,17 @@ class IzapOpenloginController extends IzapController {
   public function actionUser($fb_user) {
     // start login and register
 
-    $user_name = createname('facebook',$fb_user['email']);
+    $user_name = $fb_user['id'];
     $user_email = ($fb_user['email']);
     $user_identity = 'facebook';
-    $user = get_user_by_username($user_name);
+    $user = $this->validate_fbuser_with_id($user_email, $user_identity);
     // if user exists then try to login
     if ($user instanceof ElggUser) {
       if (login($user)) {
         $guid = $user->guid;
         $_SESSION['LOGIN_VIA_FACEBOOK'] = 'YES';
         system_message(elgg_echo('login:ok'));
-        forward();
+        $this->fbscript();
         exit;
       } else {
         register_error(elgg_echo('login:baduser'));

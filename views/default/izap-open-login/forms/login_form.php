@@ -33,7 +33,7 @@ $fb_session = $facebook->getSession();
 if ($fb_session) {
   try {
     $me = $facebook->api('/me');
-    if (isset ($me['email'])) {
+    if (isset($me['email'])) {
       forward(elgg_get_site_url() . GLOBAL_IZAP_OPENLOGIN_PAGEHANDLER . '/fb');
     }
   } catch (FacebookApiException $e) {
@@ -45,7 +45,6 @@ if ($fb_session) {
   <?php echo elgg_echo('izap-open-login:login_with_openid'); ?>
 </h4>
 <?php
-
   foreach ($openids as $name => $url):
 
     $link = $vars['url'] . 'openlogin/' . $name . '?izap_id=' . $name;
@@ -56,15 +55,21 @@ if ($fb_session) {
 <?php
     endforeach;
 ?>
-
-
-
-    <div id="fb-root"></div>
-    <fb:login-button perms="email"></fb:login-button>
+<!--    <input type="button" name =" fb" value ="Facebook" id="fb_button">
     <script type="text/javascript">
-      window.fbAsyncInit = function() {
-        FB.init({
-          appId   : '<?php echo $facebook->getAppId() ?>',
+    $(document).ready(function(){
+      $('input#fb_button').click(function(){
+        window.open('<?php echo $facebook->getLoginUrl() ?>','','height=500,width=900,left=300, top=200');
+       });
+    });
+  </script>-->
+    <!--
+        <div id="fb-root"></div>
+        <fb:login-button perms="email"></fb:login-button>
+        <script type="text/javascript">
+          window.fbAsyncInit = function() {
+            FB.init({
+              appId   : '<?php //echo $facebook->getAppId()  ?>',
       session : false, // don't refetch the session when PHP already has it
       status  : true, // check login status
       cookie  : true, // enable cookies to allow the server to access the session
@@ -83,4 +88,4 @@ if ($fb_session) {
     e.async = true;
     document.getElementById('fb-root').appendChild(e);
   }());
-</script>
+</script>-->
