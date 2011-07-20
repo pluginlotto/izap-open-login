@@ -90,7 +90,7 @@ class IzapOpenloginController extends IzapController {
       }
     } else { // if no user then register and login
       $email_array = explode('@', $user_email);
-      $user_name =$email_array[0] . '_' . rand(time(), (time() + 1000));
+      $user_name = $email_array[0] . '_' . rand(time(), (time() + 1000));
       ////$email_array[0] . '_' . rand(time(), (time() + 1000));
       $name = $email_array[0];
       $user_pass = substr(md5($user_name . rand(1000, 10000)), 1, 8);
@@ -128,30 +128,29 @@ class IzapOpenloginController extends IzapController {
 
     $user_array = get_user_by_email($email);
     $user = $user_array[0];
-    $user_login_id =  parse_url(substr($user->validated_method, 7));
-    
-    if (strstr($user_login_id['host'],$id) || $user=='')
+    $user_login_id = parse_url(substr($user->validated_method, 7));
+
+    if (strstr($user_login_id['host'], $id) || $user == '')
       return $user;
-    else {
-        register_error(elgg_echo('izap-open-login:already registered_through_facebook'));
-        forward();
-          }
+    else if ($user_login_id['path'] == 'Facebook') {
+      register_error(elgg_echo('izap-open-login:already registered_through_facebook'));
+      forward();
+    }
   }
 
-  private function validate_fbuser_with_id($email){
+  private function validate_fbuser_with_id($email) {
     $user_array = get_user_by_email($email);
     $user = $user_array[0];
-    $user_login_id =  substr($user->validated_method, 7);
+    $user_login_id = substr($user->validated_method, 7);
 
-    if($user_login_id=='facebook' || $user=='')
+    if ($user_login_id == 'facebook' || $user == '')
       return $user;
-else {
-  $login_id =  parse_url($user_login_id);
-  $login = explode('.',$login_id['host']);
-        register_error(sprintf(elgg_echo('izap-open-login:already registered'),$login[1]));
-        $this->logoutFB();
-
-}
+    else {
+      $login_id = parse_url($user_login_id);
+      $login = explode('.', $login_id['host']);
+      register_error(sprintf(elgg_echo('izap-open-login:already registered'), $login[1]));
+      $this->logoutFB();
+    }
   }
 
   public function actionFb() {
@@ -196,19 +195,20 @@ else {
             ));
     $old_session = $facebook->getSession();
     $old_session['expires'] = time() - (86400 * 30);
-    
-    $facebook->setSession($old_session,true);
+
+    $facebook->setSession($old_session, true);
     forward();
     exit;
   }
 
-  private function fbscript(){
+  private function fbscript() {
     echo '<script type="text/javascript">';
     echo 'window.parent.location.reload(true);';
     echo "\n";
     echo 'self.close();';
     echo '</script>';
   }
+
   /**
    * logins or register & login the facebook user
    * @param array $fb_user facebook user array

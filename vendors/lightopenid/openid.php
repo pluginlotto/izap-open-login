@@ -545,10 +545,11 @@ class LightOpenID
         $attributes;
         if (isset($this->data['openid_ns'])
             && $this->data['openid_ns'] == 'http://specs.openid.net/auth/2.0'
-        ) { # OpenID 2.0
+        ) {# OpenID 2.0
             # We search for both AX and SREG attributes, with AX taking precedence.
             return $this->getAxAttributes() + $this->getSregAttributes();
         }
+       
         return $this->getSregAttributes();
     }
 }
