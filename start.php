@@ -33,7 +33,7 @@ function init_izap_open_login() {
           'yahoo' => 'me.yahoo.com',
           'myopenid' => 'myopenid.com',
   );
-  elgg_extend_view('forms/login',GLOBAL_IZAP_OPENLOGIN_PLUGIN.'/forms/login_form');
+  elgg_extend_view(GLOBAL_IZAP_PL_T1_PLUGIN.'/openlogin',GLOBAL_IZAP_OPENLOGIN_PLUGIN.'/forms/login_form');
 }
 
 register_elgg_event_handler('init', 'system', 'init_izap_open_login');

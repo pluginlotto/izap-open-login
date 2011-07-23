@@ -41,51 +41,22 @@ if ($fb_session) {
   }
 }
 ?>
-<h4>
-  <?php echo elgg_echo('izap-open-login:login_with_openid'); ?>
-</h4>
+ <a href="<?php echo $facebook->getLoginUrl(array('next' => IzapBase::sethref(
+            array(
+                'context' => GLOBAL_IZAP_OPENLOGIN_PAGEHANDLER,
+                'action' => 'fb',
+            )
+            ),
+        'req_perms' => 'email'
+        ));?>"><img src="<?php echo $graphics_path . 'facebook' ?>.png" id="openid"></a>
 <?php
   foreach ($openids as $name => $url):
 
     $link = $vars['url'] . 'openlogin/' . $name . '?izap_id=' . $name;
 ?>
-    <a href="<?php echo $link ?>" title="<?php echo sprintf(elgg_echo('izap-open-login:login_with'), $name); ?>">
-      <img src="<?php echo $graphics_path . $name ?>_logo.png" alt="<?php echo sprintf(elgg_echo('izap-open-login:login_with'), $name); ?>" />
+    <a href="<?php echo $link ?>" title="<?php echo sprintf(elgg_echo('izap-open-login:login_with'), $name); ?>" >
+      <img src="<?php echo $graphics_path . $name ?>.png" alt="<?php echo sprintf(elgg_echo('izap-open-login:login_with'), $name); ?>" id="openid"/>
     </a><br/>
 <?php
     endforeach;
 ?>
-<!--    <input type="button" name =" fb" value ="Facebook" id="fb_button">
-    <script type="text/javascript">
-    $(document).ready(function(){
-      $('input#fb_button').click(function(){
-        window.open('<?php echo $facebook->getLoginUrl() ?>','','height=500,width=900,left=300, top=200');
-       });
-    });
-  </script>-->
-    <!--
-        <div id="fb-root"></div>
-        <fb:login-button perms="email"></fb:login-button>
-        <script type="text/javascript">
-          window.fbAsyncInit = function() {
-            FB.init({
-              appId   : '<?php //echo $facebook->getAppId()  ?>',
-      session : false, // don't refetch the session when PHP already has it
-      status  : true, // check login status
-      cookie  : true, // enable cookies to allow the server to access the session
-      xfbml   : true // parse XFBML
-    });
-
-    // whenever the user logs in, we refresh the page
-    FB.Event.subscribe('auth.login', function() {
-      window.location.reload();
-    });
-  };
-
-  (function() {
-    var e = document.createElement('script');
-    e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
-    e.async = true;
-    document.getElementById('fb-root').appendChild(e);
-  }());
-</script>-->
