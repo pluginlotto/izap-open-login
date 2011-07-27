@@ -33,7 +33,8 @@ $english = array(
     'izap-open-login:fb_appid' => 'Facebook app-id',
     'izap-open-login:fb_app_secid' => 'Facebook app secret id',
     'izap-open-login:already registered' => 'This email id has been already registered through %s. Try with new email id ',
-    'izap-open-login:already registered_through_facebook' => 'This email id has been already registered through facebook. Try with new email id '
+    'izap-open-login:already registered_through_facebook' => 'This email id has been already registered through facebook. Try with new email id ',
+    'izap-openid-login:aleady_registered_via_email' => 'This email has been already registered',
 );
 
 add_translation('en', $english);
