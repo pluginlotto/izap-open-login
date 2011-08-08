@@ -33,7 +33,13 @@ function init_izap_open_login() {
           'yahoo' => 'me.yahoo.com',
           'myopenid' => 'myopenid.com',
   );
-  elgg_extend_view(GLOBAL_IZAP_PL_T1_PLUGIN.'/openlogin',GLOBAL_IZAP_OPENLOGIN_PLUGIN.'/forms/login_form');
+  elgg_extend_view('login/extend',GLOBAL_IZAP_OPENLOGIN_PLUGIN.'/forms/login_form');
+
+  $message = 'add_fb_id';
+  elgg_add_admin_notice('add_fb_app_id', $message);
+  if(GLOBAL_IZAP_OPENLOGIN_FB_APPID != '' && GLOBAL_IZAP_OPENLOGIN_FB_SECID != '' ){
+    elgg_delete_admin_notice('add_fb_app_id');
+  }
 }
 
 register_elgg_event_handler('init', 'system', 'init_izap_open_login');
