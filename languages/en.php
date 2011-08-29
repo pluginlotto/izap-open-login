@@ -35,6 +35,7 @@ $english = array(
     'izap-open-login:already registered' => 'This email id has been already registered through %s. Try with new email id ',
     'izap-open-login:already registered_through_facebook' => 'This email id has been already registered through facebook. Try with new email id ',
     'izap-openid-login:aleady_registered_via_email' => 'This email has been already registered',
+    'izap-openid-login:add_facebook_api' => 'Click on the link to set Facebook apps Id & secret key <a href="/admin/plugin_settings/izap-open-login">Facebook credential</a>'
 );
 
 add_translation('en', $english);

@@ -9,7 +9,7 @@
 * @version {version} $Revision: {revision}
 * Under this agreement, No one has rights to sell this script further.
 * For more information. Contact "Tarun Jangra<tarun@izap.in>"
-* For discussion about corresponding plugins, visit http://www.pluginlotto.com/pg/forums/
+* For discussion about corresponding plugins, visit http://www.pluginlotto.com/forum/
 * Follow us on http://facebook.com/PluginLotto and http://twitter.com/PluginLotto
  */
 
@@ -17,8 +17,18 @@ define('GLOBAL_IZAP_OPENLOGIN_PLUGIN', 'izap-open-login');
 define('GLOBAL_IZAP_OPENLOGIN_PAGEHANDLER', 'openlogin');
 define('GLOBAL_IZAP_OPENLOGIN_ACTIONHANDLER', 'izap_open_login');
 
+// This will escape us from fatal error occurance when izap-bridge got deactivated after forum plugin activation
+ if (elgg_is_active_plugin(GLOBAL_IZAP_ELGG_BRIDGE)) {
+    elgg_register_event_handler('init', 'system', 'init_izap_open_login');
+
+  } else {
+    register_error('This plugin needs izap-elgg-bridge');
+    disable_plugin(GLOBAL_IZAP_OPENLOGIN_PLUGIN);
+  }
 define('GLOBAL_IZAP_OPENLOGIN_FB_APPID', IzapBase::pluginSetting(array('name' => 'izap_fb_app_id','plugin' =>GLOBAL_IZAP_OPENLOGIN_PLUGIN)));//111450135615310
 define('GLOBAL_IZAP_OPENLOGIN_FB_SECID', IzapBase::pluginSetting(array('name' => 'izap_fb_app_secid','plugin' => GLOBAL_IZAP_OPENLOGIN_PLUGIN)));//'a1b1444fd7410f3b4648ab76aac902ff');
+
+
 
 function init_izap_open_login() {
   global $CONFIG;
@@ -35,14 +45,16 @@ function init_izap_open_login() {
   );
   elgg_extend_view('login/extend',GLOBAL_IZAP_OPENLOGIN_PLUGIN.'/forms/login_form');
 
-  $message = 'add_fb_id';
+  $message =elgg_echo('izap-openid-login:add_facebook_api');
+  if(elgg_is_admin_logged_in ()){
   elgg_add_admin_notice('add_fb_app_id', $message);
   if(GLOBAL_IZAP_OPENLOGIN_FB_APPID != '' && GLOBAL_IZAP_OPENLOGIN_FB_SECID != '' ){
     elgg_delete_admin_notice('add_fb_app_id');
   }
+  }
 }
 
-register_elgg_event_handler('init', 'system', 'init_izap_open_login');
+ 
 
 function izap_facebook_logout() {
   // check the logout url for FB
