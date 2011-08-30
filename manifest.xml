@@ -6,7 +6,7 @@
     <blurb>Supports the login on elgg through other logins</blurb>
     <description>Enables the openid login for elgg. Currently supports Google, Yahoo, Myopenid
     Requires 'izap-elgg-bridge' plugin." </description>
-    <website>http://www.pluginlotto.com/pg/store</website>
+    <website>http://www.pluginlotto.com/store</website>
     <copyright>(C) iZAP Web Solutions</copyright>
     <licence>GNU Public Licence Version 2</licence>
     <requires>
