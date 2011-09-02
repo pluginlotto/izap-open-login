@@ -300,7 +300,7 @@ class IzapOpenloginController extends IzapController {
         } else {
           if (login($new_user)) {
             $_SESSION['LOGIN_VIA_FACEBOOK'] = 'YES';
-            system_message(elgg_echo('login:ok'));
+            system_message(elgg_echo('loginok'));
             forward();
           } else {
             register_error(elgg_echo('login:baduser'));
