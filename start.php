@@ -11,8 +11,8 @@
 * For more information. Contact "Tarun Jangra<tarun@izap.in>"
 * For discussion about corresponding plugins, visit http://www.pluginlotto.com/forum/
 * Follow us on http://facebook.com/PluginLotto and http://twitter.com/PluginLotto
- */
-
+ *///PRINT_R($_SESSION);
+include_once(dirname(dirname(__FILE__)).'/izap-elgg-bridge/vendors/Facebook/SDK/facebook.php');
 define('GLOBAL_IZAP_OPENLOGIN_PLUGIN', 'izap-open-login');
 define('GLOBAL_IZAP_OPENLOGIN_PAGEHANDLER', 'openlogin');
 define('GLOBAL_IZAP_OPENLOGIN_ACTIONHANDLER', 'izap_open_login');
@@ -76,18 +76,18 @@ function izap_facebook_logout() {
   // pass along any messages
   $old_msg = $_SESSION['msg'];
 
-  session_destroy();
+  //session_destroy();
 
   // starting a default session to store any post-logout messages.
-  session_init(NULL, NULL, NULL);
+  //session_init(NULL, NULL, NULL);
   $_SESSION['msg'] = $old_msg;
 
   // send user to facebook for logout
   if (!isset($logout_url) || empty($logout_url)) {
     $facebook = new Facebook(array(
                 'appId' => GLOBAL_IZAP_OPENLOGIN_FB_APPID,
-                'secret' => GLOBAL_IZAP_OPENLOGIN_FB_SECID,
-                'cookie' => true,
+                'secret' => GLOBAL_IZAP_OPENLOGIN_FB_SECID
+
             ));
     $logout_url = $facebook->getLogoutUrl(array('next' => elgg_get_site_url() . GLOBAL_IZAP_OPENLOGIN_PAGEHANDLER . '/fblogout'));
   }

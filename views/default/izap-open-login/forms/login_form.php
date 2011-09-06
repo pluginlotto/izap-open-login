@@ -41,7 +41,7 @@ $facebook = new Facebook(array(
 //  }
 //}
 ?>
- <a href="<?php echo $facebook->getLoginUrl(array('next' => IzapBase::sethref(
+ <a href="<?php echo $facebook->getLoginUrl(array('redirect_uri' => IzapBase::sethref(
             array(
                 'context' => GLOBAL_IZAP_OPENLOGIN_PAGEHANDLER,
                 'action' => 'fb',

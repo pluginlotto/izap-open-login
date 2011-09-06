@@ -154,22 +154,26 @@ class IzapOpenloginController extends IzapController {
     }
   }
 
-  public function actionFb() {
+  public function actionFb() { 
     global $CONFIG;
     $facebook = new Facebook(array(
                 'appId' => GLOBAL_IZAP_OPENLOGIN_FB_APPID,
-                'secret' => GLOBAL_IZAP_OPENLOGIN_FB_SECID,
-                'cookie' => true,
+                'secret' => GLOBAL_IZAP_OPENLOGIN_FB_SECID
+
             ));
 
-    $fb_session = $facebook->getSession();
-    if ($fb_session) {
+    $user = $facebook->getUser();
+
+
+   // $fb_session = $facebook->getSession();
+    if ($user) {
       try {
         $me = $facebook->api('/me');
         $this->actionUser($me);
       } catch (FacebookApiException $e) {
+        
         register_error($e->getMessage());
-        $this->logoutFB();
+        $user=null;
       }
     }
     else
@@ -179,27 +183,26 @@ class IzapOpenloginController extends IzapController {
   public function logoutFB() {
     $facebook = new Facebook(array(
                 'appId' => GLOBAL_IZAP_OPENLOGIN_FB_APPID,
-                'secret' => GLOBAL_IZAP_OPENLOGIN_FB_SECID,
-                'cookie' => true,
+                'secret' => GLOBAL_IZAP_OPENLOGIN_FB_SECID
+
             ));
-    $logout_url = $facebook->getLogoutUrl(array('next' => elgg_get_site_url() . GLOBAL_IZAP_OPENLOGIN_PAGEHANDLER . '/fblogout'));
+     $logout_url = $facebook->getLogoutUrl(array('next' => elgg_get_site_url() . GLOBAL_IZAP_OPENLOGIN_PAGEHANDLER . '/fblogout' ));
+
     header("Location: {$logout_url}");
     exit;
   }
 
-  public function actionFblogout() {
+  public function actionFblogout() { 
     $ret = setcookie('fbs_' . GLOBAL_IZAP_OPENLOGIN_FB_APPID, null, time() - (86400 * 30));
     $facebook = new Facebook(array(
                 'appId' => GLOBAL_IZAP_OPENLOGIN_FB_APPID,
-                'secret' => GLOBAL_IZAP_OPENLOGIN_FB_SECID,
-                'cookie' => true,
-            ));
-    $old_session = $facebook->getSession();
-    $old_session['expires'] = time() - (86400 * 30);
-
-    $facebook->setSession($old_session, true);
+                'secret' => GLOBAL_IZAP_OPENLOGIN_FB_SECID
+                 
+            )); 
+ 
+ 
     forward();
-//    exit;
+ 
   }
 
   private function validate_fbuser_with_id($email) {

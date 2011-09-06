@@ -19,7 +19,7 @@ $openid_mode = get_input('openid_mode', FALSE);
 $open_id = get_input('izap_id', FALSE);
 
 if(!$openid_mode) {
-  if($open_id) {
+  if($open_id) {  
     $openid_url = func_izap_get_openid_url($open_id);
 
     $izapOpenLogin = new IzapOpenLogin;

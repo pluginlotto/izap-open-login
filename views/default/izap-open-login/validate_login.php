@@ -14,7 +14,7 @@
  */
 
 include_once dirname(dirname(dirname(dirname(__FILE__)))) . '/engine/start.php';
-
+ 
 $user_identity = get_input('open_id_identity');
 $id_provider = get_input('id_provider');
 $user_email = get_input('user_email', 'unknown@please_change_this.com');
