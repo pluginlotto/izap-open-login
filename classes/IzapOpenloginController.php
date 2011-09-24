@@ -155,7 +155,6 @@ class IzapOpenloginController extends IzapController {
   }
 
   public function actionFb() { 
-    global $CONFIG;
     $facebook = new Facebook(array(
                 'appId' => GLOBAL_IZAP_OPENLOGIN_FB_APPID,
                 'secret' => GLOBAL_IZAP_OPENLOGIN_FB_SECID

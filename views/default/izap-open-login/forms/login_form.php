@@ -47,7 +47,7 @@ $facebook = new Facebook(array(
                 'action' => 'fb',
             )
             ),
-        'req_perms' => 'email'
+        'scope' => 'email'
         ));?>"><img src="<?php echo $graphics_path . 'facebook' ?>.png" id="openid"></a>
 <?php
   foreach ($openids as $name => $url):
