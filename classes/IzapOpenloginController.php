@@ -115,7 +115,7 @@ class IzapOpenloginController extends IzapController {
 
           $user->identity = $user_identity;
           system_message(elgg_echo('izap-open-login:user_loggedin'));
-          forward($CONFIG->wwwroot . 'pg/settings/user/' . $new_user->username . '/');
+          forward();
         } else {
           register_error(elgg_echo('izap-open-login:unable_to_login'));
         }
@@ -147,7 +147,7 @@ class IzapOpenloginController extends IzapController {
         return $user;
       } else {
         $login_id = parse_url($login_id);
-        $login = explode('.',$login_id['host']);
+        $login = explode('.', $login_id['host']);
         register_error(elgg_echo('izap-open-login:already registered', array($login[1])));
         forward();
       }
@@ -158,21 +158,20 @@ class IzapOpenloginController extends IzapController {
     $facebook = new Facebook(array(
                 'appId' => GLOBAL_IZAP_OPENLOGIN_FB_APPID,
                 'secret' => GLOBAL_IZAP_OPENLOGIN_FB_SECID
-
             ));
 
     $user = $facebook->getUser();
 
 
-   // $fb_session = $facebook->getSession();
+    // $fb_session = $facebook->getSession();
     if ($user) {
       try {
         $me = $facebook->api('/me');
         $this->actionUser($me);
       } catch (FacebookApiException $e) {
-        
+
         register_error($e->getMessage());
-        $user=null;
+        $user = null;
       }
     }
     else
@@ -183,25 +182,19 @@ class IzapOpenloginController extends IzapController {
     $facebook = new Facebook(array(
                 'appId' => GLOBAL_IZAP_OPENLOGIN_FB_APPID,
                 'secret' => GLOBAL_IZAP_OPENLOGIN_FB_SECID
-
             ));
-     $logout_url = $facebook->getLogoutUrl(array('next' => elgg_get_site_url() . GLOBAL_IZAP_OPENLOGIN_PAGEHANDLER . '/fblogout' ));
+    $logout_url = $facebook->getLogoutUrl(array('next' => elgg_get_site_url() . GLOBAL_IZAP_OPENLOGIN_PAGEHANDLER . '/fblogout'));
 
     header("Location: {$logout_url}");
     exit;
   }
 
-  public function actionFblogout() { 
-    $ret = setcookie('fbs_' . GLOBAL_IZAP_OPENLOGIN_FB_APPID, null, time() - (86400 * 30));
-    $facebook = new Facebook(array(
-                'appId' => GLOBAL_IZAP_OPENLOGIN_FB_APPID,
-                'secret' => GLOBAL_IZAP_OPENLOGIN_FB_SECID
-                 
-            )); 
- 
- 
+  public function actionFblogout() {
+    session_destroy();
+    // starting a default session to store any post-logout messages.
+    session_init(NULL, NULL, NULL);
+    system_message(elgg_echo('logoutok'));
     forward();
- 
   }
 
   private function validate_fbuser_with_id($email) {
@@ -314,7 +307,5 @@ class IzapOpenloginController extends IzapController {
     // end login/register
     // if reached here
     forward();
-//    exit;
   }
-
 }

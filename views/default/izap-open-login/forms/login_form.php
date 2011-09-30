@@ -25,21 +25,8 @@ $graphics_path = $vars['url'] . 'mod/' . GLOBAL_IZAP_OPENLOGIN_PLUGIN . '/_graph
 $facebook = new Facebook(array(
             'appId' => GLOBAL_IZAP_OPENLOGIN_FB_APPID,
             'secret' => GLOBAL_IZAP_OPENLOGIN_FB_SECID,
-            'cookie' => false,
+            //'cookie' => false,
         ));
-
-//$fb_session = $facebook->getSession();
-//// Session based API call.
-//if ($fb_session) {
-//  try {
-//    $me = $facebook->api('/me');
-//    if (isset($me['email'])) {
-//      forward(elgg_get_site_url() . GLOBAL_IZAP_OPENLOGIN_PAGEHANDLER . '/fb');
-//    }
-//  } catch (FacebookApiException $e) {
-////    register_error($e->getMessage());
-//  }
-//}
 ?>
  <a href="<?php echo $facebook->getLoginUrl(array('redirect_uri' => IzapBase::sethref(
             array(
