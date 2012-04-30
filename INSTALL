@@ -1,0 +1,12 @@
+Izap-open-login
+-----------------
+
+### Installation instructions
+
+1. Grab izap-open-login from http://www.pluginlotto.com.
+2. Uncompress downloaded folder with the name "izap-open-login"
+3. Move that to mod.
+4. Go to admin panel, find plugin and click "Activate" button.
+5. Put your 'Facebook app-id' and 'Facebook app secret id' in the text-field at admin settings of
+   your plugin and here you go.
+ 

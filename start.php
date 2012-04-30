@@ -13,6 +13,7 @@
  * For discussion about corresponding plugins, visit http://www.pluginlotto.com/forum/
  * Follow us on http://facebook.com/PluginLotto and http://twitter.com/PluginLotto
  *///PRINT_R($_SESSION);
+
 include_once(dirname(dirname(__FILE__)) . '/izap-elgg-bridge/vendors/Facebook/SDK/facebook.php');
 define('GLOBAL_IZAP_OPENLOGIN_PLUGIN', 'izap-open-login');
 define('GLOBAL_IZAP_OPENLOGIN_PAGEHANDLER', 'openlogin');
@@ -44,7 +45,7 @@ function init_izap_open_login() {
   elgg_extend_view('login/extend', GLOBAL_IZAP_OPENLOGIN_PLUGIN . '/forms/login_form');
 
   $message = elgg_echo('izap-openid-login:add_facebook_api');
-  if (elgg_is_admin_logged_in ()) {
+  if (elgg_is_admin_logged_in()) {
     elgg_add_admin_notice('add_fb_app_id', $message);
     if (GLOBAL_IZAP_OPENLOGIN_FB_APPID != '' && GLOBAL_IZAP_OPENLOGIN_FB_SECID != '') {
       elgg_delete_admin_notice('add_fb_app_id');
